@@ -1,10 +1,11 @@
 <?php 
 require_once "../inc/cabecalho-admin.php";
 use Microblog\Usuario;
+use Microblog\Utilitarios;
 $usuario = new Usuario;
 $listaDeUsuarios = $usuario->listar();
 ?>
-<pre><?=var_dump($listaDeUsuarios)?></pre>
+
 
 <div class="row">
 	<article class="col-12 bg-white rounded shadow my-1 py-4">
