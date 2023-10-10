@@ -38,6 +38,11 @@ class Usuario {
 
 
 
+    /* Métodos para codificação e comparação de senha */
+    public function codificaSenha(string $senha):string {
+        return password_hash($senha, PASSWORD_DEFAULT);
+    }
+
 
 
 
@@ -46,10 +51,8 @@ class Usuario {
         return $this->nome;
     }
 
-    public function setNome(string $nome): self
-    {
-        $this->nome = $nome;
-
+    public function setNome(string $nome): self {
+        $this->nome = filter_var($nome, FILTER_SANITIZE_SPECIAL_CHARS);
         return $this;
     }
 
@@ -58,10 +61,8 @@ class Usuario {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
+    public function setEmail(string $email): self {
+        $this->email = filter_var($email, FILTER_SANITIZE_EMAIL);
         return $this;
     }
 
@@ -72,10 +73,8 @@ class Usuario {
     }
 
 
-    public function setSenha(string $senha): self
-    {
-        $this->senha = $senha;
-
+    public function setSenha(string $senha): self {
+        $this->senha = filter_var($senha, FILTER_SANITIZE_SPECIAL_CHARS);
         return $this;
     }
 
@@ -86,34 +85,17 @@ class Usuario {
     }
 
    
-    public function setTipo(string $tipo): self
-    {
-        $this->tipo = $tipo;
-
+    public function setTipo(string $tipo): self {
+        $this->tipo = filter_var($tipo, FILTER_SANITIZE_SPECIAL_CHARS);
         return $this;
     }
 
-    /**
-     * Get the value of id
-     *
-     * @return int
-     */
-    public function getId(): int
-    {
+    public function getId(): int {
         return $this->id;
     }
 
-    /**
-     * Set the value of id
-     *
-     * @param int $id
-     *
-     * @return self
-     */
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
+    public function setId(int $id): self {
+        $this->id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
         return $this;
     }
 }
