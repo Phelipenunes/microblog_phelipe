@@ -33,6 +33,20 @@ class Usuario {
         }
     }
 
+    // SELECT de Usuarios
+    public function listar():array {
+        $sql = "SELECT * FROM usuarios ORDER BY nome";
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->execute();
+            $resultado = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao listar usuários: ".$erro->getMessage());
+        }
+
+        return $resultado;
+    }
 
 
 
