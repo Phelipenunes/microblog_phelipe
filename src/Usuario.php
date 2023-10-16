@@ -64,6 +64,22 @@ class Usuario {
         return $resultado;
     }
 
+    //Update de usuario
+    public function atualizar(){
+        $sql = "UPDATE usuarios SET nome = :nome, email = :email, senha = :senha, tipo = :tipo WHERE id = :id";
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
+            $consulta->bindValue(":nome", $this->nome, PDO::PARAM_STR);
+            $consulta->bindValue(":senha", $this->senha, PDO::PARAM_STR);
+            $consulta->bindValue(":email", $this->email, PDO::PARAM_STR);
+            $consulta->bindValue(":tipo", $this->tipo, PDO::PARAM_STR);
+            $consulta->execute();
+        } catch (Exception $erro) {
+            die("Erro ao carregar dados: ".$erro->getMessage());
+        }
+    }
+
 
 
 
@@ -73,8 +89,13 @@ class Usuario {
         return password_hash($senha, PASSWORD_DEFAULT);
     }
 
-
-
+    public function verificarSenha(string $senhaformulario, string $senhabanco):string{
+       if(password_verify($senhaformulario, $senhabanco)){
+            return $senhabanco;
+       }else{
+            return $this->codificaSenha($senhaformulario);
+       };
+    }
 
     public function getNome(): string
     {
