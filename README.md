@@ -12,4 +12,4 @@ Pequeno site de notícias utilizando PHP e MySQL.
 
 - Composer instalado
 - composer.json configurado com a(s) referência(s) de namespace e pasta das Classes
-- Execução via CLI do comando `composer dump-autoload`
+- Execução via CLI do comando `composer dump-autoload`.
