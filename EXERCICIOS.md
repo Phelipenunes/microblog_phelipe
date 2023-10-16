@@ -4,6 +4,8 @@
 
 1) Após finalizar o método `listarUm` na classe `Usuario`, vá para a página `usuario-atualiza.php` e programe o script necessário para carregar os dados somente do usuário que você escolheu **Atualizar**.
 
+Lembre-se que, no caso do campo **tipo**, é necessário que o tipo já venha selecionado (podendo ser `editor` ou `admin`).
+
 **Obs.: não mostre a senha no formulário.**
 
 ---
