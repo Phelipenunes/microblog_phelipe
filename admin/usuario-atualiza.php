@@ -12,8 +12,6 @@ if(isset($_POST['atualizar'])){
 	$usuario->setEmail($_POST['email']);
 	$usuario->setTipo($_POST['tipo']);
 
-	$usuario->setTipo($_POST['senha']);
-
 	//algoritimo geral para tratamento de senha
 
 	if(empty($_POST['senha'])){

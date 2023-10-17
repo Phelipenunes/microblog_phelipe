@@ -6,8 +6,10 @@ if(isset($_GET["campos_obrigatorios"])){
 	$feedback = "Preencha E-mail e senha";
 }else if(isset($_GET['dados_incorretos'])){
 	$feedback = "Algo não está certo!";
-}else{
-	
+}elseif(isset($_GET['logout'])){
+	$feedback = "você saiu do sistema!";
+}elseif(isset($_GET['acesso_proibido'])){
+	$feedback = "Voc~e deve logar primeiro!";
 }
 ?>
 
@@ -62,15 +64,7 @@ if(isset($_GET["campos_obrigatorios"])){
 				}
 			?>
 		</div>
-   
-    
 </div>        
-        
-        
-    
-
-
-
 <?php 
 require_once "inc/rodape.php";
 ?>
