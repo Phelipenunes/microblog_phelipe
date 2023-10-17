@@ -4,6 +4,10 @@ require_once "inc/cabecalho.php";
 // programação das mensagens de feedback (campos obrigatorios,dados incorretos...)
 if(isset($_GET["campos_obrigatorios"])){
 	$feedback = "Preencha E-mail e senha";
+}else if(isset($_GET['dados_incorretos'])){
+	$feedback = "Algo não está certo!";
+}else{
+	
 }
 ?>
 
@@ -41,21 +45,19 @@ if(isset($_GET["campos_obrigatorios"])){
 
 						//Buscar o usuario no banco de dados
 						$dados = $usuario->buscar();
-						Utilitarios::dump($dados);
-
 
 						//se não existir o usuario continuara  no login
-						//se existir 
-							//verificar a senha
-							//está correta ? iniciar o processo de login
-
-
-
-
-
-
-
-
+						if(!$dados){
+							header("location:login.php?dados_incorretos");
+						}else{
+							if (password_verify($_POST['senha'], $dados['senha'])){
+								$sessao = new ControleDeAcesso;
+								$sessao->login($dados['id'], $dados['nome'], $dados['tipo']);
+								header('location:admin/index.php');
+							}else{
+								header('location:login.php?dados_incorretos');
+							}
+						}
 					}
 				}
 			?>
