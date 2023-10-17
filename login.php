@@ -1,9 +1,9 @@
 <?php 
-use Microblog\{ControleDeAcesso,Usuario};
+use Microblog\{ControleDeAcesso,Usuario,Utilitarios};
 require_once "inc/cabecalho.php";
 // programação das mensagens de feedback (campos obrigatorios,dados incorretos...)
 if(isset($_GET["campos_obrigatorios"])){
-	$feedback = "Você deve logar primeiro!";
+	$feedback = "Preencha E-mail e senha";
 }
 ?>
 
@@ -40,7 +40,10 @@ if(isset($_GET["campos_obrigatorios"])){
 						$usuario->setEmail($_POST['email']);
 
 						//Buscar o usuario no banco de dados
-						
+						$dados = $usuario->buscar();
+						Utilitarios::dump($dados);
+
+
 						//se não existir o usuario continuara  no login
 						//se existir 
 							//verificar a senha

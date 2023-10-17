@@ -95,9 +95,10 @@ class Usuario {
     //método para buscar no banco de dados um usuario atraves do email
     public function buscar():array | bool {
         $sql = "SELECT * FROM usuarios WHERE email = :email";
+
         try {
             $consulta = $this->conexao->prepare($sql);
-            $consulta->bindValue(":email", $this->id, PDO::PARAM_STR);
+            $consulta->bindValue(":email", $this->email, PDO::PARAM_STR);
             $consulta->execute();
             $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $erro) {
