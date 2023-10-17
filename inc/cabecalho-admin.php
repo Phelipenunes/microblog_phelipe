@@ -1,5 +1,9 @@
 <?php
+use Microblog\ControleDeAcesso;
 require_once "../vendor/autoload.php";
+
+$sessao = new ControleDeAcesso;
+$sessao->verificarAcesso();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br" class="h-100">
