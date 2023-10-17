@@ -80,6 +80,18 @@ class Usuario {
         }
     }
 
+    //Delete
+    public function excluir():void{
+        $sql = "DELETE FROM usuarios WHERE id = :id";
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
+            $consulta->execute();
+        } catch (Exception $erro) {
+            die("Erro ao carregar dados: ".$erro->getMessage());
+        }
+    }
+
 
 
 
@@ -149,4 +161,6 @@ class Usuario {
         $this->id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
         return $this;
     }
+
+    
 }
