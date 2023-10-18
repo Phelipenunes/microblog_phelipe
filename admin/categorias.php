@@ -1,5 +1,9 @@
 <?php 
+use Microblog\Categoria;
 require_once "../inc/cabecalho-admin.php";
+$sessao->verificarAcessoAdmin();
+$categorias = new Categoria;
+$listadecategorias = $categorias->lertodas();
 ?>
 
 
@@ -27,9 +31,9 @@ require_once "../inc/cabecalho-admin.php";
 				</thead>
 
 				<tbody>
-
+					<?php foreach ($listadecategorias as $dados) {?>
 					<tr>
-						<td> Nome... </td>
+						<td><?=$dados['nome']?></td>
 						<td class="text-center">
 							<a class="btn btn-warning" 
 							href="categoria-atualiza.php">
@@ -42,7 +46,7 @@ require_once "../inc/cabecalho-admin.php";
 							</a>
 						</td>
 					</tr>
-
+					<?php }?>
 				</tbody>                
 			</table>
 	    </div>
