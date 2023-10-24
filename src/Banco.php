@@ -26,8 +26,7 @@ abstract class Banco {
             } catch (Exception $erro) {
                 die("Deu ruim: ".$erro->getMessage());
             }
-            return self::$conexao;
-
-        }      
+        }
+            return self::$conexao;     
     }
 }

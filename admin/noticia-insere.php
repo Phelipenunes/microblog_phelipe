@@ -2,11 +2,31 @@
 require_once "../inc/cabecalho-admin.php";
 use Microblog\Noticia;
 use Microblog\Utilitarios;
+use Microblog\Categoria;
+ $noticia = new Noticia();
 
+ $categoria = new Categoria;
+ $listaDeCategorias = $noticia->categoria->lertodas(); 
 
+ if(isset($_POST['inserir'])){
+ $noticia->setTitulo($_POST['titulo']);
+ $noticia->setTexto($_POST['texto']);
+ $noticia->setResumo($_POST['resumo']);
+ $noticia->setDestaque($_POST['destaque']);
 
+ //ID do usuario que esta inserindo a noticia
+$noticia->usuario->setId($_SESSION['id']);
 
+ // ID da categoria escolhida para a noticia
+ $noticia->categoria->setId($_POST['categoria']);
 
+ Utilitarios::dump($noticia);
+
+ /* sobre a imagem 
+ - capturar o arquivo de imagem e enviar para o servidor 
+ - capturar o nome e eviar para o banco de dados 
+ */
+}
 ?>
 
 
@@ -17,15 +37,17 @@ use Microblog\Utilitarios;
 		Inserir nova notícia
 		</h2>
 				
-		<form class="mx-auto w-75" action="" method="post" id="form-inserir" name="form-inserir">
+		<form class="mx-auto w-75" action="" method="post" id="form-inserir" enctype="multipart/form-data" name="form-inserir">
 
             <div class="mb-3">
                 <label class="form-label" for="categoria">Categoria:</label>
                 <select class="form-select" name="categoria" id="categoria" required>
 					<option value=""></option>
-					<option value="1">Ciência</option>
-					<option value="2">Educação</option>
-					<option value="3">Tecnologia</option>
+				<?php foreach($listaDeCategorias as $itemCategoria){?>
+					<option value="<?=$itemCategoria['id']?>">
+					<?=$itemCategoria['nome']?>
+					</option>
+				<?php } ?>
 				</select>
 			</div>
 
@@ -46,7 +68,7 @@ use Microblog\Utilitarios;
 			</div>
 
 			<div class="mb-3">
-                <label class="form-label" for="imagem" class="form-label">Selecione uma imagem:</label>
+                <label class="form-label" for="imagem">Selecione uma imagem:</label>
                 <input required class="form-control" type="file" id="imagem" name="imagem"
                 accept="image/png, image/jpeg, image/gif, image/svg+xml">
 			</div>
