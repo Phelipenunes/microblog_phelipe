@@ -24,8 +24,18 @@ $noticia->usuario->setId($_SESSION['id']);
 
  /* sobre a imagem 
  - capturar o arquivo de imagem e enviar para o servidor 
- - capturar o nome e eviar para o banco de dados 
  */
+$imagem = $_FILES['imagem'];
+$noticia->upload($imagem);
+
+/* 
+- capturar o nome e eviar para o banco de dados 
+ */
+$noticia->setImagem($imagem["name"]);
+
+//executar no banco e redirecionar
+$noticia->inserir();
+header("location:noticias.php");
 }
 ?>
 

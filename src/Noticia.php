@@ -47,7 +47,28 @@ final class Noticia {
             die("Erro ao carregar dados: ".$erro->getMessage());
         }
     }
-
+    // Método para upload de foto
+    public function upload(array $arquivo):void{
+        //definindo os tipos válidos
+        $tiposValidos = [
+            "image/png",
+            "image/jpeg",
+            "image/gif",
+            "image/svg+xml"
+        ];
+        if (!in_array($arquivo['type'],$tiposValidos)){
+            die("
+            <script>
+            alert('Formato inválido!');
+            history.back();
+            </script>
+            ");
+        }
+        $nome = $arquivo['name'];
+        $temporario = $arquivo['tmp_name'];
+        $pastafinal = "../imagens/.$nome";
+        move_uploaded_file($temporario, $pastafinal);
+    }
 
     public function getId(): int
     {
