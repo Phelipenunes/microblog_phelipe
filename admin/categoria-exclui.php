@@ -5,6 +5,7 @@ use Microblog\ControleDeAcesso;
 
  $sessao = new ControleDeAcesso;
  $sessao->verificarAcesso();
+ $sessao->verificarAcessoAdmin();
 
  $categoria = new Categoria;
  $categoria->setId($_GET['id']);

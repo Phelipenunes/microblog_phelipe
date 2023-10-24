@@ -22,7 +22,7 @@ if (isset($_POST['inserir'])){
 
 			<div class="mb-3">
 				<label class="form-label" for="nome">Nome:</label>
-				<input class="form-control" type="text" id="nome" name="nome" required>
+				<input class="form-control" type="text" id="nome" name="nome" required >
 			</div>
 			
 			<button class="btn btn-primary" id="inserir" name="inserir"><i class="bi bi-save"></i> Inserir</button>

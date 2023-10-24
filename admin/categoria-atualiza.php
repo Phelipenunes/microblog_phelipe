@@ -1,5 +1,18 @@
 <?php 
+use Microblog\Categoria;
+use Microblog\ControleDeAcesso;
 require_once "../inc/cabecalho-admin.php";
+$categoria = new Categoria;
+$sessao = new ControleDeAcesso;
+$sessao->verificarAcessoAdmin(); // se é admin
+$categoria->setId($_GET['id']);
+$umacategoria = $categoria->lerum();
+if (isset($_POST['atualizar'])){
+	$categoria->setNome($_POST['nome']);
+	$categoria->atualizar();
+	header("location:categorias.php?categoria_atualizada");
+
+}
 ?>
 
 
@@ -14,7 +27,7 @@ require_once "../inc/cabecalho-admin.php";
 
 			<div class="mb-3">
 				<label class="form-label" for="nome">Nome:</label>
-				<input class="form-control" type="text" id="nome" name="nome" required>
+				<input value="<?=$umacategoria['nome']?>" class="form-control" type="text" id="nome" name="nome" required >
 			</div>
 			
 			<button class="btn btn-primary" name="atualizar"><i class="bi bi-arrow-clockwise"></i> Atualizar</button>
