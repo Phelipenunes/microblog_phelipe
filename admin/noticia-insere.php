@@ -1,5 +1,12 @@
 <?php 
 require_once "../inc/cabecalho-admin.php";
+use Microblog\Noticia;
+use Microblog\Utilitarios;
+
+
+
+
+
 ?>
 
 
@@ -64,4 +71,3 @@ require_once "../inc/cabecalho-admin.php";
 <?php 
 require_once "../inc/rodape-admin.php";
 ?>
-
