@@ -47,6 +47,21 @@ final class Noticia {
             die("Erro ao carregar dados: ".$erro->getMessage());
         }
     }
+
+    //listar
+    public function listar():array{
+        //se o tipo do usuario logar por admin
+        if($this->usuario->getTipo() ==='admin'){
+            $sql ="SELECT noticias.id, noticias.titulo, noticias.data, usuarios.nome AS autor, noticias.destaque
+                   FROM noticias INNER JOIN usuarios ON noticias.usuario_id = usuarios.id ORDER BY data DESC";
+        }else{
+            //se usuario logar com o tipo editor usa este
+            $sql = "SELECT id, titulo, data, destaque FROM noticias WHERE usuario_id = :usuario_id
+                    ORDER BY data DESC";
+        }
+    }
+
+
     // Método para upload de foto
     public function upload(array $arquivo):void{
         //definindo os tipos válidos
@@ -69,6 +84,8 @@ final class Noticia {
         $pastafinal = "../imagens/".$nome;
         move_uploaded_file($temporario, $pastafinal);
     }
+
+
 
     public function getId(): int
     {
