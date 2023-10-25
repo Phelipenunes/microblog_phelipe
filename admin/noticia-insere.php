@@ -20,8 +20,6 @@ $noticia->usuario->setId($_SESSION['id']);
  // ID da categoria escolhida para a noticia
  $noticia->categoria->setId($_POST['categoria']);
 
- Utilitarios::dump($noticia);
-
  /* sobre a imagem 
  - capturar o arquivo de imagem e enviar para o servidor 
  */
