@@ -66,7 +66,7 @@ final class Noticia {
         }
         $nome = $arquivo['name'];
         $temporario = $arquivo['tmp_name'];
-        $pastafinal = "../imagens/.$nome";
+        $pastafinal = "../imagens/".$nome;
         move_uploaded_file($temporario, $pastafinal);
     }
 
