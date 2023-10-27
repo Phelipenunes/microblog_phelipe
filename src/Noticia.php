@@ -28,9 +28,17 @@ final class Noticia {
         $this->conexao = Banco::conecta();
     }
 
-    //métodos CRUD
-    public function inserir():void{
-        $sql = "INSERT INTO noticias(titulo, texto, resumo, imagem, destaque, usuario_id, categoria_id) VALUES(:titulo, :texto, :resumo, :imagem, :destaque, :usuario_id, :categoria_id)";
+    /* Métodos CRUD */
+    public function inserir():void {
+        $sql = "INSERT INTO noticias(
+            titulo, texto, resumo,
+            imagem, destaque, 
+            usuario_id, categoria_id
+        ) VALUES(
+            :titulo, :texto, :resumo,
+            :imagem, :destaque, 
+            :usuario_id, :categoria_id
+        )";
 
         try {
             $consulta = $this->conexao->prepare($sql);
@@ -39,84 +47,231 @@ final class Noticia {
             $consulta->bindValue(":resumo", $this->resumo, PDO::PARAM_STR);
             $consulta->bindValue(":imagem", $this->imagem, PDO::PARAM_STR);
             $consulta->bindValue(":destaque", $this->destaque, PDO::PARAM_STR);
-
+            
+            /* Aqui, primeiro chamamos os getters de ID do Usuario e de Categoria,
+            para só depois associar os valores aos parâmetros da consulta SQL.
+            Isso é possível devido à associação entre as Classes. */
             $consulta->bindValue(":usuario_id", $this->usuario->getId(), PDO::PARAM_INT);
             $consulta->bindValue(":categoria_id", $this->categoria->getId(), PDO::PARAM_INT);
+
             $consulta->execute();
         } catch (Exception $erro) {
-            die("Erro ao carregar dados: ".$erro->getMessage());
+            die("Erro ao inserir notícia: " . $erro->getMessage());
         }
     }
 
-    //listar
-    public function listar():array{
-        //se o tipo do usuario logar por admin
-        if($this->usuario->getTipo() ==='admin'){
-            $sql ="SELECT noticias.id, noticias.titulo, noticias.data, usuarios.nome AS autor, noticias.destaque
-                   FROM noticias INNER JOIN usuarios ON noticias.usuario_id = usuarios.id ORDER BY data DESC";
-        }else{
-            //se usuario logar com o tipo editor usa este
-            $sql = "SELECT id, titulo, data, destaque FROM noticias WHERE usuario_id = :usuario_id
+
+    public function listar():array {
+        
+        /* Se o tipo de usuário logado for admin */
+        if( $this->usuario->getTipo() === "admin" ){
+            // Considere o SQL abaixo (pega tudo de todos)
+            $sql = "SELECT noticias.id, noticias.titulo, 
+                    noticias.data, usuarios.nome AS autor, noticias.destaque
+                    FROM noticias INNER JOIN usuarios
+                    ON noticias.usuario_id = usuarios.id
                     ORDER BY data DESC";
-        }
+        } else {
+            // Senão, considere o SQL abaixo (pega somente referente ao editor)
+            $sql = "SELECT id, titulo, data, destaque
+                    FROM noticias WHERE usuario_id = :usuario_id
+                    ORDER BY data DESC";            
+        }  
+        
         try {
             $consulta = $this->conexao->prepare($sql);
-            if($this->usuario->getTipo() !=='admin'){
-            $consulta->bindValue(":usuario_id", $this->usuario->getId(), PDO::PARAM_INT);
+            
+            /* Somente se NÃO for um admin, trate o parâmetro abaixo */
+            if( $this->usuario->getTipo() !== "admin" ){
+                $consulta->bindValue(
+                    ":usuario_id", $this->usuario->getId(), PDO::PARAM_INT
+                );
             }
+            
             $consulta->execute();
             $resultado = $consulta->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $erro) {
-            die("Erro ao carregar noticias: ".$erro->getMessage());
+            die("Erro ao carregar notícias: ".$erro->getMessage());
         }
-        return $resultado;
-    }
 
-    //listarUm
-    public function listarUm():array{
-        if($this->usuario->getTipo() ==='admin'){
-            $sql ="SELECT * FROM noticias WHERE id = :id";
-        }else{
-            $sql = "SELECT * FROM noticias WHERE id = :usuario_id AND usuario_id = :usuario_id";
+        return $resultado;
+    } // final listar()
+
+
+    public function listarUm():array {
+        if($this->usuario->getTipo() === "admin"){
+            // Carrega dados de qualquer noticia de qualquer pessoa
+            $sql = "SELECT * FROM noticias WHERE id = :id";
+        } else {
+            // Carrega dados de qualquer noticia DELE/DELA
+            $sql = "SELECT * FROM noticias 
+                    WHERE id = :id AND usuario_id = :usuario_id";
         }
+
         try {
             $consulta = $this->conexao->prepare($sql);
             $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
 
-            if($this->usuario->getTipo() !=='admin'){
-            $consulta->bindValue(":usuario_id", $this->usuario->getId(), PDO::PARAM_INT);
+            if($this->usuario->getTipo() !== "admin"){
+                $consulta->bindValue(
+                    ":usuario_id", $this->usuario->getId(), PDO::PARAM_INT
+                );
             }
+
             $consulta->execute();
             $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $erro) {
-            die("Erro ao carregar noticias: ".$erro->getMessage());
+            die("Erro ao carregar notícia: ".$erro->getMessage());
         }
         return $resultado;
     }
 
 
-    // Método para upload de foto
-    public function upload(array $arquivo):void{
-        //definindo os tipos válidos
+    public function atualizar():void {
+        if($this->usuario->getTipo() === "admin"){
+            $sql = "UPDATE noticias SET
+                    titulo = :titulo, texto = :texto, resumo = :resumo,
+                    imagem = :imagem, categoria_id = :categoria_id,
+                    destaque = :destaque WHERE id = :id";
+        } else {
+            $sql = "UPDATE noticias SET
+                    titulo = :titulo, texto = :texto, resumo = :resumo,
+                    imagem = :imagem, categoria_id = :categoria_id,
+                    destaque = :destaque 
+                    WHERE id = :id AND usuario_id = :usuario_id";
+        }
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
+            $consulta->bindValue(":titulo", $this->titulo, PDO::PARAM_STR);
+            $consulta->bindValue(":texto", $this->texto, PDO::PARAM_STR);
+            $consulta->bindValue(":resumo", $this->resumo, PDO::PARAM_STR);
+            $consulta->bindValue(":imagem", $this->imagem, PDO::PARAM_STR);
+            $consulta->bindValue(":destaque", $this->destaque, PDO::PARAM_STR);
+            $consulta->bindValue(":categoria_id", $this->categoria->getId(), PDO::PARAM_INT);
+            if($this->usuario->getTipo() !== "admin"){
+                $consulta->bindValue(
+                    ":usuario_id", $this->usuario->getId(), PDO::PARAM_INT
+                );
+            }
+            $consulta->execute();
+        } catch (Exception $erro) {
+            die("Erro ao atualizar notícia: " . $erro->getMessage());
+        }
+    }
+
+
+    public function excluir():void {
+        if($this->usuario->getTipo() === "admin"){
+            $sql = "DELETE FROM noticias WHERE id = :id";
+        } else {
+            $sql = "DELETE FROM noticias 
+                    WHERE id = :id AND usuario_id = :usuario_id";
+        }
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
+            if($this->usuario->getTipo() !== "admin"){
+                $consulta->bindValue(":usuario_id", $this->usuario->getId(), PDO::PARAM_INT);
+            }
+            $consulta->execute();
+        } catch (Exception $erro) {
+            die("Erro ao excluir notícia: " . $erro->getMessage());
+        }
+    }
+
+
+
+    /* Método para upload de foto */
+    public function upload(array $arquivo):void {
+        
+        // Definindo os tipos válidos
         $tiposValidos = [
-            "image/png",
-            "image/jpeg",
-            "image/gif",
+            "image/png", 
+            "image/jpeg", 
+            "image/gif", 
             "image/svg+xml"
         ];
-        if (!in_array($arquivo['type'],$tiposValidos)){
+
+        // Verificando se o arquivo NÃO É um dos tipos válidos
+        if( !in_array($arquivo["type"], $tiposValidos) ){
+            // Alertamos o usuário e o fazemos voltar para o form.
             die("
-            <script>
-            alert('Formato inválido!');
-            history.back();
-            </script>
+                <script>
+                alert('Formato inválido!');
+                history.back();
+                </script>                
             ");
         }
-        $nome = $arquivo['name'];
-        $temporario = $arquivo['tmp_name'];
-        $pastafinal = "../imagens/".$nome;
-        move_uploaded_file($temporario, $pastafinal);
+
+        // Acessando APENAS o nome/extensão do arquivo
+        $nome = $arquivo["name"];
+
+        // Acessando os dados de acesso/armazenamento temporários
+        $temporario = $arquivo["tmp_name"];
+
+        // Definindo a pasta de destino das imagens no site
+        $pastaFinal = "../imagens/".$nome;
+
+        // Movemos/enviamos da área temporária para a final/destino
+        move_uploaded_file($temporario, $pastaFinal);
     }
+
+
+    /* Métodos da área pública */
+
+    // index.php
+    public function listarDestaques():array{
+        $sql = "SELECT id, titulo, resumo, imagem FROM noticias
+                WHERE destaque = :destaque ORDER BY data DESC";
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":destaque", $this->destaque, PDO::PARAM_STR);
+            $consulta->execute();
+            $resultado = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao carregar destaques: ".$erro->getMessage());
+        }
+        return $resultado;
+    }
+
+    // index.php
+    public function listarTodas():array {
+        $sql = "SELECT id, data, titulo, resumo FROM noticias 
+                ORDER BY data DESC";
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->execute();
+            $resultado = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao carregar notícias: ".$erro->getMessage());
+        }
+        return $resultado;
+    }
+
+    // noticia.php
+    public function listarDetalhes():array {
+        $sql = "SELECT noticias.id, noticias.titulo, noticias.data, 
+                    usuarios.nome AS autor, noticias.texto, noticias.imagem
+                FROM noticias INNER JOIN usuarios
+                ON noticias.usuario_id = usuarios.id
+                WHERE noticias.id = :id";
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
+            $consulta->execute();
+            $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $erro) {
+            die("Erro ao abrir a notícia: ".$erro->getMessage());
+        }
+        return $resultado;
+    }
+
+
+
 
 
 
