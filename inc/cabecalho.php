@@ -1,4 +1,6 @@
 <?php 
+/* Output buffer (gerenciamento de memoria de saida)*/
+ob_start();
 require_once "vendor/autoload.php";
 use Microblog\Noticia;
 $noticia = new Noticia;
