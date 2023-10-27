@@ -12,4 +12,8 @@ abstract class Utilitarios {
         var_dump($dados);
         echo "</pre>";
     }
-}
+    
+    public static function formataData(string $data):string{
+        return date("", strtotime($data));
+    }
+}    
