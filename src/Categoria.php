@@ -5,7 +5,7 @@ use Exception, PDO;
 final class Categoria {
     private int $id;
     private string $nome;
-    private PDO $conexao;
+    private PDO $conexao; 
 
     public function __construct(){
         $this->conexao = Banco::conecta();

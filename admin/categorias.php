@@ -3,7 +3,7 @@ use Microblog\Categoria;
 require_once "../inc/cabecalho-admin.php";
 $sessao->verificarAcessoAdmin();
 $categorias = new Categoria;
-$listadecategorias = $categorias->lertodas();
+$listadecategorias = $categorias->listar();
 ?>
 
 
